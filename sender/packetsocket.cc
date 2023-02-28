@@ -17,7 +17,8 @@ int PacketSocket::get_index( const std::string & name ) const
   /* Find index number from name */
   struct ifreq ifr;
 
-  strncpy( ifr.ifr_name, name.c_str(), IFNAMSIZ );
+  //strncpy( ifr.ifr_name, name.c_str(), IFNAMSIZ );
+  strncpy( ifr.ifr_name, name.c_str(), sizeof(ifr.ifr_name)-1);
   if ( ioctl( sock, SIOCGIFINDEX, &ifr ) < 0 ) {
     perror( "ioctl" );
     exit( 1 );

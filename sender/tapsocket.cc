@@ -31,7 +31,8 @@ int TapSocket::tun_alloc(const char *dev, int flags) const
                     
   /* if a device name is supplied, use it */
   assert( dev != nullptr );
-  strncpy(ifr.ifr_name, dev, IFNAMSIZ);
+  //strncpy(ifr.ifr_name, dev, IFNAMSIZ);
+  strncpy(ifr.ifr_name, dev, sizeof(ifr.ifr_name)-1);
                     
   /* try to create the device */
   if( (err = ioctl(fd, TUNSETIFF, (void *) &ifr)) < 0 ) {
