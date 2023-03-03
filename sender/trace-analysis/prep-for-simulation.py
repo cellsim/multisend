@@ -1,7 +1,7 @@
 #! /usr/bin/python
 import sys
 if(len(sys.argv) < 3 ) : 
-  print "Usage : prep-for-simulation.py <file-name> <session-number> "
+  print("Usage : prep-for-simulation.py <file-name> <session-number> ")
   exit
 file_name=sys.argv[1];
 fh=open(file_name,"r");
@@ -14,7 +14,7 @@ log_pos=log_details[0];
 if(log_pos=="client") :
   log_session=int(log_details[2]);
   if(session_number != log_session) :
-        print "Client log file session number doesn't match input session number ";
+        print("Client log file session number doesn't match input session number ")
         exit
   else :
     output_handle=open("downlink-"+str(session_number)+".pps","w");
