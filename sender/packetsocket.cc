@@ -84,14 +84,14 @@ vector< string > PacketSocket::recv_raw( void )
   } else if ( bytes_read > BUFFER_SIZE ) {
     fprintf( stderr, "Received size (%ld) too long (> %d)!\n",
 	     bytes_read, BUFFER_SIZE );
-    exit( 1 );
+    //exit( 1 );
   }
 
   if ( source_address_len != 18 ) {
     fprintf( stderr, "address length = %d\n",
 	     source_address_len );
     perror( "recvfrom (unexpected address length)" );
-    exit( 1 );
+    //exit( 1 );
   }
 
   if ( source_address.sll_pkttype != PACKET_OUTGOING ) {
@@ -106,7 +106,7 @@ void PacketSocket::send_raw( const std::string & input )
   ssize_t bytes_sent = send( sock, input.data(), input.size(), 0 );
   if ( bytes_sent < 0 ) {
     perror( "send" );
-    exit( 1 );
+    //exit( 1 );
   }
 }
 
