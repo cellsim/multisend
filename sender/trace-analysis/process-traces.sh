@@ -13,7 +13,7 @@ do
    echo "Session id is "$session_id;
 
    # get a tmp server file 
-   grep "senderid=$session_id" $server_logs > server-$session_name-$session_id
+   grep -h "senderid=$session_id" $server_logs > server-$session_name-$session_id
 
    # prepare the files for simulation
    nice -n 19 python prep-for-simulation.py client-$session_name-$session_id $session_id ;
