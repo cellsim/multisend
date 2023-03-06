@@ -28,8 +28,13 @@ int main( int argc, char *argv[] )
   uint64_t ts=Socket::timestamp();
   if ( argc == 1 ) { /* server */
     server = true;
+#ifdef FLYIO
+    data_socket.bind( Socket::Address( "fly-global-services", 9001 ) );
+    feedback_socket.bind( Socket::Address( "fly-global-services", 9002 ) );
+#else
     data_socket.bind( Socket::Address( "0.0.0.0", 9001 ) );
     feedback_socket.bind( Socket::Address( "0.0.0.0", 9002 ) );
+#endif
   } else { /* client */
     server = false;
     

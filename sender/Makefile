@@ -20,6 +20,9 @@ controlled-delay: controlled-delay.o $(objects)
 saturatr: saturatr.o $(objects)
 	$(CXX) $(CXXFLAGS) -o $@ $+ $(LIBS)
 
+saturatr-flyio: saturatr.o $(objects)
+	$(CXX) $(CXXFLAGS) -DFLYIO -o $@ $+ $(LIBS)
+
 cellsim: cellsim.o $(objects)
 	$(CXX) $(CXXFLAGS) -o $@ $+ $(LIBS)
 
