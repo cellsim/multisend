@@ -119,7 +119,7 @@ void SaturateServo::tick( void )
       outgoing.recv_timestamp = 0;
       outgoing.sender_id = _send_id;
 
-      _send.send( Socket::Packet( _remote, outgoing.str( 1400 ) ) );
+      _send.send( Socket::Packet( _remote, outgoing.str( 1300 ) ) );
 
       /*
       printf( "%s pid=%d DATA SENT %d senderid=%d seq=%d, send_time=%ld, recv_time=%ld\n",
@@ -139,7 +139,7 @@ void SaturateServo::tick( void )
     outgoing.recv_timestamp = 0;
     outgoing.sender_id = _send_id;
 
-    _send.send( Socket::Packet( _remote, outgoing.str( 1400 ) ) );
+    _send.send( Socket::Packet( _remote, outgoing.str( 1300 ) ) );
 
     /*
     printf( "%s pid=%d DATA SENT senderid=%d seq=%d, send_time=%ld, recv_time=%ld\n",
