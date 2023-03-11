@@ -1,4 +1,6 @@
 #include <assert.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "saturateservo.hh"
 #include "socket.hh"
@@ -37,6 +39,7 @@ void SaturateServo::recv( void )
   if ( contents->sequence_number != -1 ) {
     /* not an ack */
     printf( "MARTIAN!\n" );
+    fprintf( _log_file, "ignore, recvd invalid packet, seq = %d\n", contents->sequence_number);
     return;
   }
 
@@ -53,6 +56,7 @@ void SaturateServo::recv( void )
   /* process the ack */
   if ( contents->sender_id != _send_id ) {
     /* not from us */
+    fprintf( _log_file, "ignore, recvd invalid packet, sender_id = %d\n", contents->sender_id);
     return;
   } else {
     if ( contents->ack_number > _max_ack_id ) {
@@ -121,9 +125,8 @@ void SaturateServo::tick( void )
 
       _send.send( Socket::Packet( _remote, outgoing.str( 1300 ) ) );
 
-      /*
-      printf( "%s pid=%d DATA SENT %d senderid=%d seq=%d, send_time=%ld, recv_time=%ld\n",
-      _name.c_str(), getpid(), amount_to_send, outgoing.sender_id, outgoing.sequence_number, outgoing.sent_timestamp, outgoing.recv_timestamp ); */
+      /*fprintf( _log_file, "%s pid=%d DATA SENT %d senderid=%d seq=%d, send_time=%ld, recv_time=%ld\n",
+      _name.c_str(), getpid(), amount_to_send, outgoing.sender_id, outgoing.sequence_number, outgoing.sent_timestamp, outgoing.recv_timestamp );*/
 
       _packets_sent++;
     }
@@ -141,9 +144,8 @@ void SaturateServo::tick( void )
 
     _send.send( Socket::Packet( _remote, outgoing.str( 1300 ) ) );
 
-    /*
-    printf( "%s pid=%d DATA SENT senderid=%d seq=%d, send_time=%ld, recv_time=%ld\n",
-    _name.c_str(), getpid(), outgoing.sender_id, outgoing.sequence_number, outgoing.sent_timestamp, outgoing.recv_timestamp ); */
+    /*fprintf( _log_file, "%s pid=%d DATA SENT senderid=%d seq=%d, send_time=%ld, recv_time=%ld\n",
+    _name.c_str(), getpid(), outgoing.sender_id, outgoing.sequence_number, outgoing.sent_timestamp, outgoing.recv_timestamp );*/
 
     _packets_sent++;
 
