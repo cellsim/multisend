@@ -59,7 +59,7 @@ int main( int argc, char *argv[] )
 
   FILE* log_file;
   char log_file_name[50];
-  sprintf(log_file_name,"/tmp/%s-%d-%d",server ? "server" : "client",(int)(ts/1e9),sender_id);
+  sprintf(log_file_name,"%s-%d-%d",server ? "server" : "client",(int)(ts/1e9),sender_id);
   log_file=fopen(log_file_name,"w");
 
   SaturateServo saturatr( "OUTGOING", log_file, feedback_socket, data_socket, remote_data_address, server, sender_id );
