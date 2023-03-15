@@ -27,6 +27,7 @@ private:
 
 public:
   Process( const double maximum_rate, const double s_brownian_motion_rate, const double s_outage_escape_rate, const int bins );
+  Process(const Process&) = default;
 
   /* apply brownian motion */
   void evolve( const double time );

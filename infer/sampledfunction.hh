@@ -19,6 +19,7 @@ private:
 
 public:
   SampledFunction( const int num_samples, const double maximum_value, const double minimum_value );
+  SampledFunction(const SampledFunction& sampleFunc) = default;
 
   unsigned int size( void ) const { return _function.size(); }
   unsigned int index( const double x ) const { return to_bin( x ); }
