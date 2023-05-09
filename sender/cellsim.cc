@@ -6,6 +6,7 @@
 #include <queue>
 #include <limits.h>
 #include <signal.h>
+#include <inttypes.h>
 
 #include "select.h"
 #include "timestamp.h"
@@ -120,7 +121,7 @@ DelayQueue::DelayQueue( FILE * s_output, const string & s_name, const uint64_t s
   srand(0);
   fprintf( _output, "# Initialized %s queue with %d services.\n", filename.c_str(), (int)_schedule.size() );
   fprintf( _output, "# Direction: %s\n", _name.c_str() );
-  fprintf( _output, "# base timestamp: %lu\n", base_timestamp );
+  fprintf( _output, "# base timestamp: %" PRIu64 "\n", base_timestamp );
 }
 
 void DelayQueue::schedule_from_file( const uint64_t base_timestamp ) 
@@ -136,7 +137,7 @@ void DelayQueue::schedule_from_file( const uint64_t base_timestamp )
 
   while ( 1 ) {
     uint64_t ms;
-    int num_matched = fscanf( f, "%lu\n", &ms );
+    int num_matched = fscanf( f, "%" PRIu64 "\n", &ms );
     if ( num_matched != 1 ) {
       break;
     }
@@ -198,7 +199,7 @@ void DelayQueue::write( const string & packet )
     uint64_t now( timestamp() );
 
     if ( _delay.size() >= queue_limit_in_packets ) {
-      fprintf( _output, "# %lu + %lu (dropped)\n",
+      fprintf( _output, "# %" PRIu64 " + %d (dropped)\n",
 	       convert_timestamp( now ),
 	       packet.size() );
 
@@ -208,7 +209,7 @@ void DelayQueue::write( const string & packet )
     DelayedPacket p( now, now + _ms_delay, packet );
     _delay.push( p );
 
-    fprintf( _output, "%lu + %lu\n",
+    fprintf( _output, "%" PRIu64 " + %d\n",
 	     convert_timestamp( now ),
 	     packet.size() );
     
@@ -239,7 +240,7 @@ void DelayQueue::tick( void )
     const uint64_t pdo_time = _schedule.front();
     _schedule.pop();
     /* delivery opportunity */
-    fprintf( _output, "%lu # %d\n", convert_timestamp( pdo_time ), SERVICE_PACKET_SIZE );
+    fprintf( _output, "%" PRIu64 " # %d\n", convert_timestamp( pdo_time ), SERVICE_PACKET_SIZE );
 
     int bytes_to_play_with = SERVICE_PACKET_SIZE;
 
@@ -252,11 +253,11 @@ void DelayQueue::tick( void )
 
 	/*
 	if ( _printing ) {
-	  printf( "%s %lu delivery %d %lu leftover\n", _name.c_str(), convert_timestamp( pdo_time ), int(pdo_time - _limbo.front().packet.entry_time), _limbo.front().packet.contents.size() );
+	  printf( "%s %" PRIu64 " delivery %d %" PRIu64 " leftover\n", _name.c_str(), convert_timestamp( pdo_time ), int(pdo_time - _limbo.front().packet.entry_time), _limbo.front().packet.contents.size() );
 	}
 	*/
 	/* new-style output (mahimahi-style) */
-	fprintf( _output, "%lu - %lu %d\n",
+	fprintf( _output, "%" PRIu64 " -  %d %d\n",
 		 convert_timestamp( pdo_time ),
 		 _limbo.front().packet.contents.size(),
 		 int(pdo_time - _limbo.front().packet.entry_time) );
@@ -282,7 +283,7 @@ void DelayQueue::tick( void )
 	/* underflow */
 	/*
 	if ( _printing ) {
-	  printf( "%s %lu underflow %d\n", _name.c_str(), convert_timestamp( pdo_time ), bytes_to_play_with );
+	  printf( "%s %" PRIu64 " underflow %d\n", _name.c_str(), convert_timestamp( pdo_time ), bytes_to_play_with );
 	}
 	*/
 	_total_bytes += bytes_to_play_with;
@@ -298,12 +299,12 @@ void DelayQueue::tick( void )
 
 	  /*
 	  if ( _printing ) {
-	    printf( "%s %lu delivery %d %lu\n", _name.c_str(), convert_timestamp( pdo_time ), int(pdo_time - packet.entry_time), packet.contents.size() );
+	    printf( "%s %" PRIu64 " delivery %d %" PRIu64 "\n", _name.c_str(), convert_timestamp( pdo_time ), int(pdo_time - packet.entry_time), packet.contents.size() );
 	  }
 	  */
 
 	  /* new-style output (mahimahi-style) */
-	  fprintf( _output, "%lu - %lu %d\n",
+	  fprintf( _output, "%" PRIu64 " - %d %d\n",
 		   convert_timestamp( pdo_time ),
 		   packet.contents.size(),
 		   int(pdo_time - packet.entry_time) );
