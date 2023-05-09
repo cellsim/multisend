@@ -199,7 +199,7 @@ void DelayQueue::write( const string & packet )
     uint64_t now( timestamp() );
 
     if ( _delay.size() >= queue_limit_in_packets ) {
-      fprintf( _output, "# %" PRIu64 " + %d (dropped)\n",
+      fprintf( _output, "# %" PRIu64 " + %zu (dropped)\n",
 	       convert_timestamp( now ),
 	       packet.size() );
 
@@ -209,7 +209,7 @@ void DelayQueue::write( const string & packet )
     DelayedPacket p( now, now + _ms_delay, packet );
     _delay.push( p );
 
-    fprintf( _output, "%" PRIu64 " + %d\n",
+    fprintf( _output, "%" PRIu64 " + %zu\n",
 	     convert_timestamp( now ),
 	     packet.size() );
     
@@ -257,7 +257,7 @@ void DelayQueue::tick( void )
 	}
 	*/
 	/* new-style output (mahimahi-style) */
-	fprintf( _output, "%" PRIu64 " -  %d %d\n",
+	fprintf( _output, "%" PRIu64 " -  %zu %d\n",
 		 convert_timestamp( pdo_time ),
 		 _limbo.front().packet.contents.size(),
 		 int(pdo_time - _limbo.front().packet.entry_time) );
@@ -304,7 +304,7 @@ void DelayQueue::tick( void )
 	  */
 
 	  /* new-style output (mahimahi-style) */
-	  fprintf( _output, "%" PRIu64 " - %d %d\n",
+	  fprintf( _output, "%" PRIu64 " - %zu %d\n",
 		   convert_timestamp( pdo_time ),
 		   packet.contents.size(),
 		   int(pdo_time - packet.entry_time) );
