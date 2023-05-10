@@ -28,10 +28,10 @@ EOF
 
 cat << EOF > $BUILD_NAME/DEBIAN/postinst
 #!/bin/bash
-ln -sf /sbin/cellsim /opt/cellsim/cellsim
-echo "Init the setup: \"cellsim-setup.sh [ingress] [egress]\""
+ln -sf /opt/cellsim/cellsim /sbin/cellsim
+echo "Init the setup: \"/opt/cellsim/cellsim-setup.sh [ingress] [egress]\""
 echo "To run cellsim emulator:"
-echo "nohup sudo ./cellsim [uplink_trace] [downlink_trace] [loss] [ingress] [egress] > /tmp/cellsim-stdout 2>/tmp/cellsim-stderr"
+echo "nohup sudo cellsim [uplink_trace] [downlink_trace] [loss] [ingress] [egress] > /tmp/cellsim-stdout 2>/tmp/cellsim-stderr"
 echo "Preinstalled trace files can be found at \"/opt/cellsim/traces\""
 echo "To stop cellsim emulator:"
 echo "killall cellsim"
