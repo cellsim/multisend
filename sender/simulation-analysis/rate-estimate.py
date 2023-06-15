@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 def parse(filepath):
     fh=open(filepath)
-    acc=[0]*3700 # 1 hour of data
+    acc=[0]*7400 # 2 hour of data
     start = end = None
     for line in fh.readlines() :
         time=int(float(line.split()[0]));
