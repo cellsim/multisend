@@ -35,6 +35,8 @@ public:
 
   double probability( const Process & ensemble, unsigned int count ) const;
 
+  void printProbability( const Process & ensemble) const;
+
   unsigned int lower_quantile( const Process & ensemble, const double x ) const;
 };
 

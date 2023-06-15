@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <algorithm>
+#include <iostream>
 #include <boost/math/distributions/normal.hpp>
 
 #include "process.hh"
@@ -15,6 +16,16 @@ Process::Process( const double maximum_rate, const double s_brownian_motion_rate
     _normalized( false )
 {
   normalize();
+}
+
+std::ostream& operator<<(std::ostream& os, const Process& process)
+{
+    process.pmf().for_each( [&] ( const double midpoint, const double & value, unsigned int index )
+			   {
+           os << "["<< index << "]" << "midpoint " << midpoint << ", value = " << value << std::endl;
+			   } );
+
+    return os;
 }
 
 void Process::observe( const double time, const int counts )
@@ -68,6 +79,11 @@ void Process::evolve( const double time )
 
   const double zero_escape_probability = 1 - poissonpdf( time * _outage_escape_rate, 0 );
 
+#if DEBUG
+  std::cout << "stddev = " << stddev << ", _outage_escape_rate = " << _outage_escape_rate 
+    << ", zero_escape_probability = " << zero_escape_probability << std::endl;
+#endif
+
   _probability_mass_function.for_each( [&]
 				       ( const double old_rate, const double & old_prob, const unsigned int old_index )
 				       {
@@ -82,9 +98,21 @@ void Process::evolve( const double time )
 								zfactor = ( new_index != 0 ) ? zero_escape_probability : (1 - zero_escape_probability);
 							      }
 							      
-							      new_prob += zfactor * old_prob
-								* ( _gaussian.cdf( new_pmf.sample_ceil( new_rate ) - old_rate )
-								    - _gaussian.cdf( new_pmf.sample_floor( new_rate ) - old_rate ) );
+                    double cell_diff = new_pmf.sample_ceil( new_rate ) - old_rate;
+                    double floor_diff = new_pmf.sample_floor( new_rate ) - old_rate;
+                    double cell_cdf = _gaussian.cdf(cell_diff);
+                    double floor_cdf = _gaussian.cdf(floor_diff);
+                    double pdf =  cell_cdf - floor_cdf;
+							      new_prob += zfactor * old_prob * pdf;
+                    assert(cell_diff > floor_diff);
+
+                    // std::cout << std::setprecision(2)<< "old_rate = " << old_rate << ", new_rate = " << new_rate
+                    // << ", old_index = " << old_index << ", new_index = " << new_index
+                    // << ", zfactor = " << zfactor
+                    // << ", cell_diff = " << cell_diff << ", floor_diff = " << floor_diff
+                    // << ", cell_cdf = " << cell_cdf << ", floor_cdf = " << floor_cdf << ", gaussian prob = " << pdf
+                    // << ", old_prob = " << old_prob
+                    // << ", new_prob = " << new_prob << std::endl;
 							    } );
 				       } );
   
@@ -149,6 +177,9 @@ double Process::count_probability( const double time, const int counts )
 					     const unsigned int index )
 				       {
 					 ret += rate_probability * poissonpdf( rate * time, counts );
+
+          //  std::cout << "rate_probability = " << rate_probability << ", p = " << poissonpdf( rate * time, counts )
+          //     << ", rate = " << rate << ", time = " << time << ", counts = " << counts << ", ret = " << ret << std::endl;
 				       } );
 
   return ret;
